@@ -2,18 +2,15 @@ import json
 import os
 import time
 from flask import Flask, request, jsonify
-# import sys
-# sys.path.insert(0, 'pythonlibs\lib\python3.10\site-packages')
 import openai
 from openai import OpenAI
-import assistant_functions
-
+import functions
 
 from packaging import version
 
 required_version = version.parse("1.1.1")
 current_version = version.parse(openai.__version__)
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 if current_version < required_version:
   raise ValueError(
       f"Error: OpenAI version {openai.__version__} is less than the required version 1.1.1"
@@ -25,7 +22,7 @@ app = Flask(__name__)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Load assistant ID from file or create new one
-assistant_id = assistant_functions.create_assistant(client)
+assistant_id = functions.create_assistant(client)
 print("Assistant created with ID:", assistant_id)
 
 
@@ -96,7 +93,7 @@ def check_run_status():
         if tool_call.function.name == "create_lead":
           # Process lead creation
           arguments = json.loads(tool_call.function.arguments)
-          output = assistant_functions.create_lead(arguments["name"], arguments["phone"])
+          output = functions.create_lead(arguments["name"], arguments["phone"])
           client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,
                                                        run_id=run_id,
                                                        tool_outputs=[{
