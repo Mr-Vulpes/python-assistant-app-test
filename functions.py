@@ -5,7 +5,7 @@ from openai import OpenAI
 from prompts import assistant_instructions
 from datetime import datetime, timedelta, timezone
 import pytz
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 
 # Current time in UTC
 now_utc = datetime.utcnow()
